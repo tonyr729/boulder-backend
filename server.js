@@ -39,6 +39,21 @@ app.get('/api/v1/year/:yearID', (request, response) => {
     });
 });
 
+app.get('/api/v1/last5', (request, response) => {
+  const currentDate = new Date();
+  var currentYear = currentDate.getFullYear();
+  return database('weather').whereBetween('year', [(currentYear - 5), currentYear]).select()
+    .then(years => {
+      return response.status(200).json({
+        status: 'success',
+        years
+      });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
 
 
 server.listen(app.get('port'), () => {
