@@ -7,6 +7,11 @@ const server = require('http').Server(app);
 const bodyParser = require('body-parser');
 
 app.set('port', process.env.PORT || 3001);
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.use(bodyParser.json());
 
 
@@ -27,7 +32,7 @@ app.get('/api/v1/year/:yearID', (request, response) => {
   const yearID = request.params.yearID;
   return database('weather').where({
     year: yearID
-  }).select()
+  }).orderBy('id', 'asce').select()
     .then(year => {
       return response.status(200).json({
         status: 'success',
